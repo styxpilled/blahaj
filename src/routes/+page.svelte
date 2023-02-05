@@ -2,12 +2,16 @@
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	export let data: PageData;
+	let show = false;
+	let img: HTMLImageElement;
 
 	onMount(() => {
 		const oldUrl = localStorage.getItem('blahaj_url');
 		data.url = data.url ?? (oldUrl || '');
 		if (data.url) localStorage.setItem('blahaj_url', data.url);
 		else localStorage.setItem('blahaj_url', data.url);
+		img.onload = () => (show = true);
+		img.src = data.url;
 	});
 </script>
 
@@ -15,7 +19,7 @@
 	<h1>
 		A random Blahaj pulled from <a href="reddit.com/r/BLAHAJ">r/BLAHAJ</a>
 	</h1>
-	<img src={data.url} alt="Random Blahaj image" />
+	<img bind:this={img} class:hidden={!show} alt="Random Blahaj image" />
 </main>
 
 <style>
@@ -29,5 +33,9 @@
 	img {
 		max-width: 90vw;
 		max-height: 85vh;
+	}
+
+	.hidden {
+		opacity: 0;
 	}
 </style>
