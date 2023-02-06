@@ -1,24 +1,43 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
+	import { fetchBlahaj } from './fetch';
+	import Reload from './Reload.svelte';
 	export let data: PageData;
 	let show = false;
+	let url: string;
 	let img: HTMLImageElement;
+	let animationPlaying = false;
 
-	onMount(() => {
+	onMount(async () => setUrl(data.url || (await fetchBlahaj(fetch)).url));
+
+	const setUrl = (newUrl: string) => {
 		const oldUrl = localStorage.getItem('blahaj_url');
-		data.url = data.url ?? (oldUrl || '');
-		if (data.url) localStorage.setItem('blahaj_url', data.url);
-		else localStorage.setItem('blahaj_url', data.url);
+		url = newUrl ?? (oldUrl || '');
+		if (url) localStorage.setItem('blahaj_url', url);
+		else localStorage.setItem('blahaj_url', url);
 		img.onload = () => (show = true);
-		img.src = data.url;
-	});
+		img.src = url;
+	};
+
+	const reload = async () => {
+		if (!animationPlaying) {
+			animationPlaying = true;
+			setTimeout(() => {
+				animationPlaying = false;
+			}, 1000);
+			setUrl((await fetchBlahaj(fetch)).url);
+		}
+	};
 </script>
 
 <main>
-	<h1>
-		A random Blahaj pulled from <a href="reddit.com/r/BLAHAJ">r/BLAHAJ</a>
-	</h1>
+	<div>
+		<button class:playing={animationPlaying} on:click={reload}><Reload /></button>
+		<h1>
+			A random Blahaj pulled from <a href="reddit.com/r/BLAHAJ">r/BLAHAJ</a>
+		</h1>
+	</div>
 	{#if !show}
 		loading...
 	{/if}
@@ -31,6 +50,36 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+	}
+
+	button {
+		all: unset;
+		display: flex;
+		align-items: center;
+		font-size: 2em;
+		cursor: pointer;
+	}
+
+	button.playing {
+		color: #3391ff;
+		animation: spin 1s normal;
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
+	div {
+		display: flex;
+	}
+
+	div > * {
+		padding: 0 0.5rem;
 	}
 
 	:global(html) {
