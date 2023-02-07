@@ -35,21 +35,49 @@
 	<div>
 		<button class:playing={animationPlaying} on:click={reload}><Reload /></button>
 		<h1>
-			A random Blahaj pulled from <a href="reddit.com/r/BLAHAJ">r/BLAHAJ</a>
+			A random Blahaj pulled from <a href="https://reddit.com/r/BLAHAJ">r/BLAHAJ</a>
 		</h1>
 	</div>
 	{#if !show}
 		loading...
 	{/if}
-	<img bind:this={img} class:hidden={!show} alt="Random Blahaj image" />
+	<img bind:this={img} class:hidden={!show} alt="Random Blahaj" />
 </main>
 
 <style>
+	:global(html) {
+		height: 100vh;
+		width: 100vw;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:global(html) {
+			color: aliceblue;
+			--color: aliceblue;
+			background-color: #181a1b;
+		}
+	}
+
+	@media (prefers-color-scheme: light) {
+		:global(html) {
+			color: black;
+			--color: black;
+			background-color: aliceblue;
+		}
+	}
+
 	main {
 		font-family: 'Courier New', Courier, monospace;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+	}
+
+	a:link {
+		color: #3391ff;
+	}
+	a:visited {
+		color: #986ae8;
 	}
 
 	button {
@@ -58,11 +86,11 @@
 		align-items: center;
 		font-size: 2em;
 		cursor: pointer;
+		margin-right: 1rem;
 	}
 
 	button.playing {
-		color: #3391ff;
-		animation: spin 1s normal;
+		animation: spin 1s, fade 0.2s forwards, fade 0.2s 0.8s reverse;
 	}
 
 	@keyframes spin {
@@ -74,31 +102,17 @@
 		}
 	}
 
+	@keyframes fade {
+		0% {
+			color: var(--color);
+		}
+		100% {
+			color: #3391ff;
+		}
+	}
+
 	div {
 		display: flex;
-	}
-
-	div > * {
-		padding: 0 0.5rem;
-	}
-
-	:global(html) {
-		height: 100vh;
-		width: 100vw;
-	}
-
-	@media (prefers-color-scheme: dark) {
-		:global(html) {
-			color: aliceblue;
-			background-color: #181a1b;
-		}
-	}
-
-	@media (prefers-color-scheme: light) {
-		:global(html) {
-			color: black;
-			background-color: aliceblue;
-		}
 	}
 
 	img {
