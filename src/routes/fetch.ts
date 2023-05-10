@@ -3,11 +3,11 @@ const tries = 3;
 export const fetchBlahaj = async (f: typeof fetch) => {
 
   for (let index = 0; index < tries; index++) {
-    const res = await f('https://www.reddit.com/r/blahaj/random.json');
-    if (!res.ok) return { url: null };
-    const data = await res.json();
-
     try {
+      const res = await f('https://www.reddit.com/r/blahaj/random.json');
+      if (!res.ok) return { url: null };
+      const data = await res.json();
+
       for (const post of data[0].data.children) {
         if (
           !(post.data.url_overridden_by_dest as string).includes('gallery')
